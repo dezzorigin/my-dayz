@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyDayz Personal OS
 
-## Getting Started
+A privacy-focused, local-first personal management dashboard. Built for power users to track habits, manage finances, and organize schedules, integrated with a local AI assistant.
 
-First, run the development server:
+## ✨ Features
+* **Local-First Architecture:** All your personal data (habits, finances, tasks) is securely stored in your browser's local storage. Zero external database, 100% privacy.
+* **AI Vault (Gemini Powered):** Built-in smart assistant utilizing Google's Gemini API for productivity hacks and task management.
+* **Dynamic Theming:** Seamless transition between Deep Dark Mode and Clean Light Mode with Cyber Pink accents.
+* **Modular Dashboard:** Includes a unified Planner, Finance Tracker, and Habit Matrix.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠️ Tech Stack
+* **Framework:** Next.js (App Router)
+* **Styling:** Tailwind CSS & Framer Motion
+* **State Management:** Zustand (with Persist Middleware)
+* **AI Integration:** Google Generative AI SDK
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
+1. Clone the repository: `git clone https://github.com/yourusername/mydayz.git`
+2. Install dependencies: `npm install`
+3. Create a `.env.local` file and add your API Key:
+   `GEMINI_API_KEY=your_google_gemini_api_key_here`
+4. Run the development server: `npm run dev`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Currently in active development (MVP Phase).*
