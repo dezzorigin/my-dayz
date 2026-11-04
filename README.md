@@ -1,44 +1,58 @@
 # My Dayz
 
-My Dayz — project by Nabil Aulia Dika (dezzorigin).
+My Dayz — project oleh Nabil Aulia Dika (dezzorigin).
 
 ## Status Proyek
 
 **Dalam pengembangan** _(README ada)_
 
-## Tech Stack
+## 📋 Tech Stack
 
-Next.js 14
+Next.js
 
-## Struktur Proyek
+## 🏗️ Arsitektur
+
+```mermaid
+flowchart LR
+  U[Pengguna] --> B[Browser]
+  B --> F[Frontend (React/Next.js)]
+  F --> A[API Routes]
+  A --> D[(Database)]
+```
+
+## 📁 Struktur Proyek
 
 ```
-.env.local
-.gitignore
+public/
+src/
+LICENSE
+PRD.md
 README.md
 eslint.config.mjs
 next-env.d.ts
 next.config.ts
-package-lock.json
 package.json
 postcss.config.mjs
 progress.md
-public/
-src/
 tsconfig.json
 tsconfig.tsbuildinfo
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
 ```bash
+# Install dependencies
 npm install
+
+# Jalankan development server
 npm run dev
 ```
 
-## Lisensi
+> Untuk project HTML/Python/Go, lihat instruksi di atas atau file konfigurasi.
 
-MIT — lihat file [LICENSE](./LICENSE).
+## 📄 Lisensi
+
+MIT — lihat [LICENSE](./LICENSE).
 
 ---
-_Dibuat dan dikelola oleh Nabil Aulia Dika. Kontribusi dan issue welcome._
+_Dikembangkan oleh **dezzorigin** (Nabil Aulia Dika)._
