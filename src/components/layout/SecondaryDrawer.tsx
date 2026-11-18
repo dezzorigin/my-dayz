@@ -112,7 +112,7 @@ function FinancePanel() {
               <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Keterangan..." className="input-dark w-full text-[13px]" />
               <div className="flex gap-2">
                 <input type="number" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} placeholder="Jumlah" className="input-dark flex-1 text-[13px]" />
-                <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as any })} className="input-dark flex-shrink-0 text-[12px]">
+                <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as typeof form.type })} className="input-dark flex-shrink-0 text-[12px]">
                   <option value="expense">Keluar</option><option value="income">Masuk</option>
                 </select>
               </div>

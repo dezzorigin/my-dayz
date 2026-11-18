@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDayz — Diagram</title>
+<style>
+  :root { --ink:#111; --mut:#666; --line:#d4d4d8; --accent:#db2777; --accent-bg:#fdf2f8; --card:#fff; --bg:#fafafa; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Georgia, 'Times New Roman', serif; line-height:1.6; }
+  header { max-width:880px; margin:0 auto; padding:56px 24px 8px; }
+  header p.kicker { font-family:ui-monospace, monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 12px; }
+  h1 { font-size:34px; line-height:1.15; margin:0 0 10px; font-weight:700; }
+  header p.lede { color:var(--mut); font-size:17px; max-width:640px; }
+  main { max-width:880px; margin:0 auto; padding:8px 24px 64px; }
+  figure { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 24px 20px; margin:32px 0; }
+  figcaption { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  figcaption h2 { font-size:19px; margin:0 0 6px; }
+  figcaption p { color:var(--mut); font-size:15px; margin:0; }
+  svg { width:100%; height:auto; display:block; }
+  .node { fill:#fff; stroke:var(--line); stroke-width:1.2; }
+  .node-accent { fill:var(--accent-bg); stroke:var(--accent); stroke-width:1.4; }
+  .node-dim { fill:#f7f7f8; stroke:var(--line); stroke-width:1.2; }
+  .lbl { font-family:ui-sans-serif, system-ui, sans-serif; font-size:13px; font-weight:650; fill:var(--ink); }
+  .sub { font-family:ui-sans-serif, system-ui, sans-serif; font-size:11px; fill:var(--mut); }
+  .edge { stroke:var(--accent); stroke-width:1.6; fill:none; marker-end:url(#arr); }
+  .edge-dim { stroke:#a0a0a5; stroke-width:1.3; fill:none; stroke-dasharray:4 3; marker-end:url(#arr-dim); }
+  .tag { font-family:ui-monospace, monospace; font-size:10.5px; fill:var(--accent); }
+  footer { max-width:880px; margin:0 auto; padding:0 24px 48px; color:var(--mut); font-size:13px; }
+  footer a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <p class="kicker">MyDayz · Diagram</p>
+  <h1>Tiga gambar, satu sistem.</h1>
+  <p class="lede">Arsitektur deployment, alur login demo, dan alur chat AI — digambar sebagai SVG langsung di halaman ini (bukan Mermaid), supaya tetap terbaca di repo, di browser, maupun di hasil cetak.</p>
+</header>
+<main>
+
+<figure>
+<svg viewBox="0 0 820 340" role="img" aria-label="Diagram arsitektur MyDayz">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#db2777"/></marker>
+    <marker id="arr-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a0a0a5"/></marker>
+  </defs>
+  <!-- Browser -->
+  <rect class="node-accent" x="20" y="30" width="170" height="86" rx="10"/>
+  <text class="lbl" x="38" y="62">Browser</text>
+  <text class="sub" x="38" y="82">Next.js static export</text>
+  <text class="sub" x="38" y="100">React 19 · Zustand</text>
+  <!-- Pages -->
+  <rect class="node" x="300" y="30" width="220" height="86" rx="10"/>
+  <text class="lbl" x="318" y="62">Cloudflare Pages</text>
+  <text class="sub" x="318" y="82">out/ — 13 halaman statis</text>
+  <text class="sub" x="318" y="100">my-dayz.pages.dev</text>
+  <!-- Worker -->
+  <rect class="node-accent" x="300" y="170" width="220" height="86" rx="10"/>
+  <text class="lbl" x="318" y="202">Pages Worker</text>
+  <text class="sub" x="318" y="222">worker/_worker.js — tanpa dep</text>
+  <text class="sub" x="318" y="240">/api/status · /api/chat</text>
+  <!-- Gemini -->
+  <rect class="node" x="620" y="30" width="180" height="86" rx="10"/>
+  <text class="lbl" x="638" y="62">Gemini</text>
+  <text class="sub" x="638" y="82">gemini-1.5-flash</text>
+  <text class="sub" x="638" y="100">bila kunci terpasang</text>
+  <!-- Supabase -->
+  <rect class="node" x="620" y="170" width="180" height="86" rx="10"/>
+  <text class="lbl" x="638" y="202">Supabase</text>
+  <text class="sub" x="638" y="222">Auth · Postgres · Storage</text>
+  <text class="sub" x="638" y="240">disiapkan — belum aktif</text>
+  <!-- localStorage -->
+  <rect class="node-dim" x="20" y="170" width="170" height="86" rx="10"/>
+  <text class="lbl" x="38" y="202">localStorage</text>
+  <text class="sub" x="38" y="222">11 store Zustand</text>
+  <text class="sub" x="38" y="240">tanpa akun, tanpa server</text>
+  <!-- edges -->
+  <path class="edge" d="M190 73 H296"/>
+  <path class="edge" d="M410 116 V166"/>
+  <path class="edge" d="M520 73 H616"/>
+  <path class="edge-dim" d="M520 213 H616"/>
+  <path class="edge-dim" d="M190 213 H296"/>
+  <text class="tag" x="205" y="60">HTTPS</text>
+  <text class="tag" x="425" y="146">API</text>
+  <text class="tag" x="540" y="60">AI, bila kunci ada</text>
+  <text class="tag" x="540" y="200">nanti</text>
+  <text class="tag" x="205" y="200">mode lokal</text>
+  <text class="sub" x="20" y="310">Garis putus-putus = jalur yang hanya aktif bila env terpasang. Worker tidak pernah menyimpan kunci di browser.</text>
+</svg>
+<figcaption>
+  <h2>1 · Arsitektur deployment</h2>
+  <p>Frontend statis di Pages; satu-satunya yang dinamis adalah Worker untuk chat Gemini. Semua data produk tinggal di localStorage browser — Supabase adalah lapisan berikutnya, bukan prasyarat.</p>
+</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 820 300" role="img" aria-label="Diagram alur login demo MyDayz">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#db2777"/></marker>
+  </defs>
+  <!-- Landing -->
+  <rect class="node-accent" x="20" y="30" width="150" height="70" rx="10"/>
+  <text class="lbl" x="38" y="60">Landing</text>
+  <text class="sub" x="38" y="80">hero + preview</text>
+  <!-- Login -->
+  <rect class="node" x="230" y="30" width="150" height="70" rx="10"/>
+  <text class="lbl" x="248" y="60">Login</text>
+  <text class="sub" x="248" y="80">email apa pun / demo</text>
+  <!-- Seed? -->
+  <rect class="node" x="440" y="30" width="150" height="70" rx="10"/>
+  <text class="lbl" x="458" y="60">Store kosong?</text>
+  <text class="sub" x="458" y="80">cek 11 store</text>
+  <!-- Dashboard -->
+  <rect class="node-accent" x="650" y="30" width="150" height="70" rx="10"/>
+  <text class="lbl" x="668" y="60">Dashboard</text>
+  <text class="sub" x="668" y="80">timeline + stats</text>
+  <!-- Seed -->
+  <rect class="node" x="440" y="170" width="150" height="70" rx="10"/>
+  <text class="lbl" x="458" y="200">Seed data contoh</text>
+  <text class="sub" x="458" y="220">5 task · 3 habit · 5 txn</text>
+  <!-- Skip -->
+  <rect class="node-dim" x="230" y="170" width="150" height="70" rx="10"/>
+  <text class="lbl" x="248" y="200">Lewati seed</text>
+  <text class="sub" x="248" y="220">data pengguna aman</text>
+  <!-- edges -->
+  <path class="edge" d="M170 65 H226"/>
+  <path class="edge" d="M380 65 H436"/>
+  <path class="edge" d="M590 65 H646"/>
+  <path class="edge" d="M515 100 V166"/>
+  <path class="edge" d="M440 205 H384"/>
+  <path class="edge" d="M305 135 V166"/>
+  <path class="edge" d="M305 170 V166"/>
+  <text class="tag" x="185" y="52">Masuk</text>
+  <text class="tag" x="395" y="52">login</text>
+  <text class="tag" x="605" y="52">siap</text>
+  <text class="tag" x="530" y="140">ya</text>
+  <text class="tag" x="395" y="190">seed → dashboard</text>
+  <text class="tag" x="250" y="150">tidak</text>
+  <text class="sub" x="20" y="280">Seed hanya bila SEMUA store kosong — tidak pernah menimpa data pengguna. Penanda: localStorage mydayz_demo_seeded_v1.</text>
+</svg>
+<figcaption>
+  <h2>2 · Alur login demo + seed</h2>
+  <p>Pengguna baru langsung melihat produk bekerja: login demo mengisi data contoh sekali saja. Pengguna lama tidak pernah disentuh seed-nya.</p>
+</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 820 300" role="img" aria-label="Diagram alur chat AI MyDayz">
+  <defs>
+    <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#db2777"/></marker>
+    <marker id="arr3-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a0a0a5"/></marker>
+  </defs>
+  <!-- UI -->
+  <rect class="node-accent" x="20" y="30" width="160" height="70" rx="10"/>
+  <text class="lbl" x="38" y="60">AI bar / AI Vault</text>
+  <text class="sub" x="38" y="80">teks + gambar + suara</text>
+  <!-- Worker -->
+  <rect class="node" x="250" y="30" width="170" height="70" rx="10"/>
+  <text class="lbl" x="268" y="60">Worker /api/chat</text>
+  <text class="sub" x="268" y="80">validasi + normalisasi</text>
+  <!-- Key? -->
+  <rect class="node" x="490" y="30" width="150" height="70" rx="10"/>
+  <text class="lbl" x="508" y="60">Kunci ada?</text>
+  <text class="sub" x="508" y="80">env GEMINI_API_KEY</text>
+  <!-- Gemini -->
+  <rect class="node-accent" x="660" y="30" width="140" height="70" rx="10"/>
+  <text class="lbl" x="678" y="60">Gemini</text>
+  <text class="sub" x="678" y="80">1.5-flash</text>
+  <!-- 503 -->
+  <rect class="node-dim" x="490" y="170" width="150" height="70" rx="10"/>
+  <text class="lbl" x="508" y="200">503 jujur</text>
+  <text class="sub" x="508" y="220">AI_KEY_REQUIRED</text>
+  <!-- Reply -->
+  <rect class="node" x="660" y="170" width="140" height="70" rx="10"/>
+  <text class="lbl" x="678" y="200">{ reply }</text>
+  <text class="sub" x="678" y="220">200 JSON</text>
+  <!-- edges -->
+  <path class="edge" d="M180 65 H246"/>
+  <path class="edge" d="M420 65 H486"/>
+  <path class="edge" d="M640 65 H656"/>
+  <path class="edge-dim" d="M565 100 V166"/>
+  <path class="edge" d="M730 100 V166"/>
+  <text class="tag" x="195" y="52">POST</text>
+  <text class="tag" x="435" y="52">cek</text>
+  <text class="tag" x="580" y="140">tidak</text>
+  <text class="tag" x="745" y="140">ya</text>
+  <text class="sub" x="20" y="280">Tanpa kunci, chat TIDAK PERNAH mengembalikan jawaban palsu — 503 + penjelasan ditampilkan apa adanya di UI.</text>
+</svg>
+<figcaption>
+  <h2>3 · Alur chat AI</h2>
+  <p>Worker adalah satu-satunya tempat yang menyentuh kunci Gemini. Frontend tidak pernah melihat kunci, dan ketiadaan kunci adalah kondisi yang dikomunikasikan — bukan disembunyikan.</p>
+</figcaption>
+</figure>
+
+</main>
+<footer>
+  MyDayz · Diagram dibuat mengikuti gaya diagram-design (HTML + SVG, bukan Mermaid). Lihat <a href="ARCHITECTURE.md">ARCHITECTURE.md</a>, <a href="API.md">API.md</a>, dan <a href="DEMO.md">DEMO.md</a>.
+</footer>
+</body>
+</html>

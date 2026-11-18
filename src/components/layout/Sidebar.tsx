@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/themeStore";
 import { useAuthStore } from "@/store/authStore";
+import { useEffect, useState } from "react";
 
 // ─── Nav Definition ───────────────────────────────────────────────────────────
 
@@ -57,6 +58,18 @@ export function Sidebar() {
   const router = useRouter();
   const { mode, toggle } = useThemeStore();
   const { logout, userName } = useAuthStore();
+  // Status AI diambil dari Worker (/api/status) — pill di bawah TIDAK BOLEH
+  // mengklaim "Connected" bila GEMINI_API_KEY memang belum terpasang.
+  const [aiReady, setAiReady] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/status")
+      .then((r) => r.json())
+      .then((d) => { if (alive) setAiReady(d?.mode === "gemini"); })
+      .catch(() => { if (alive) setAiReady(false); });
+    return () => { alive = false; };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -155,16 +168,20 @@ export function Sidebar() {
           </span>
         </button>
 
-        {/* AI pill */}
+        {/* AI pill — status nyata dari /api/status, bukan klaim statis */}
         <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-pink-500/[0.06] border border-pink-500/[0.12]">
           <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center flex-shrink-0">
             <Sparkles size={11} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-semibold text-[var(--text-primary)]">AI Active</p>
-            <p className="text-[9px] text-[var(--text-muted)] font-mono truncate">Gemini · Connected</p>
+            <p className="text-[11px] font-semibold text-[var(--text-primary)]">
+              {aiReady ? "AI Active" : aiReady === false ? "AI Belum Aktif" : "AI …"}
+            </p>
+            <p className="text-[9px] text-[var(--text-muted)] font-mono truncate">
+              {aiReady ? "Gemini · Connected" : aiReady === false ? "Gemini · Tanpa kunci" : "Gemini · Memeriksa…"}
+            </p>
           </div>
-          <span className="w-1.5 h-1.5 rounded-full bg-pink-400 flex-shrink-0 animate-dot-blink" />
+          <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", aiReady ? "bg-pink-400 animate-dot-blink" : "bg-[var(--text-muted)]")} />
         </div>
 
         {/* User + Logout */}

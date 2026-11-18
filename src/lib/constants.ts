@@ -195,7 +195,7 @@ export const NAV_ITEMS: NavGroup[] = [
     items: [
       { id: 'habits',         href: '/habits',         label: 'Habits',       emoji: '✅' },
       { id: 'diary',          href: '/diary',          label: 'Daily Diary',  emoji: '📝' },
-      { id: 'neural-roadmap', href: '/neural-roadmap', label: 'Neural Map',   emoji: '🧠' },
+      { id: 'neural-roadmap', href: '/roadmap', label: 'Neural Map',   emoji: '🧠' },
       { id: 'ai',             href: '/ai',             label: 'AI Assistant', emoji: '🤖' },
     ],
   },

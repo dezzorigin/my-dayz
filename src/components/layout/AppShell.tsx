@@ -13,7 +13,7 @@ interface AppShellProps {
   children: React.ReactNode;
 }
 
-const FULLBLEED_ROUTES = ["/ai", "/roadmap", "/neural-roadmap"];
+const FULLBLEED_ROUTES = ["/ai", "/roadmap"];
 const NO_SHELL_ROUTES = ["/", "/login"];
 
 const pageVariants: Variants = {

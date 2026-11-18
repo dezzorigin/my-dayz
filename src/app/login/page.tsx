@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { Mail, Lock, ArrowRight, Loader2, Sparkles, Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import { seedDemoIfEmpty } from "@/lib/demo";
 
 // --- ANIMATION VARIANTS (TS FIX) ---
-const containerVariants: any = {
+const containerVariants: Variants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1, 
@@ -20,7 +22,7 @@ const containerVariants: any = {
   }
 };
 
-const itemVariants: any = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, x: -20 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.4 } }
 };
@@ -30,19 +32,18 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
 
   const login = useAuthStore((s) => s.login);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const router = useRouter();
 
-  useEffect(() => setMounted(true), []);
-
+  // Redirect langsung dari isLoggedIn — zustand persist terhidrasi sinkron
+  // saat store dibuat, jadi tidak perlu state `mounted` perantara.
   useEffect(() => {
-    if (mounted && isLoggedIn) {
+    if (isLoggedIn) {
       router.replace("/dashboard");
     }
-  }, [mounted, isLoggedIn, router]);
+  }, [isLoggedIn, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,11 +61,22 @@ export default function LoginPage() {
 
     // Accept any credentials for now (dummy auth)
     login(email.trim(), email.split("@")[0]);
+    // Login pertama: isi data contoh supaya dashboard langsung hidup.
+    seedDemoIfEmpty();
     router.push("/dashboard");
   };
 
-  if (!mounted) return null;
+  const handleDemoLogin = async () => {
+    setLoading(true);
+    setError(null);
+    await new Promise((r) => setTimeout(r, 400));
+    login("demo@mydayz.local", "Demo");
+    seedDemoIfEmpty();
+    router.push("/dashboard");
+  };
 
+  // Form login di-render saat SSR seperti landing — redirect ke /dashboard
+  // tetap hanya jalan di client setelah mount.
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background Effects */}
@@ -164,6 +176,18 @@ export default function LoginPage() {
         <motion.p variants={itemVariants} className="text-center text-xs text-[var(--text-muted)] mt-6">
           Demo mode — masukkan email apapun untuk masuk
         </motion.p>
+
+        <motion.div variants={itemVariants} className="mt-4">
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            disabled={loading}
+            className="w-full rounded-xl py-3 border border-pink-500/30 bg-pink-500/5 text-pink-400 font-semibold text-sm hover:bg-pink-500/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <Sparkles size={16} />
+            Masuk sebagai demo — lihat dengan data contoh
+          </button>
+        </motion.div>
       </motion.div>
     </div>
   );
