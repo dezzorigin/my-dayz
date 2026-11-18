@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Target, GraduationCap, Wallet, Moon, ChevronLeft, ChevronRight, X, Plus, Trash2, FileText } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useTaskStore } from "@/store/taskStore";
 import { useHabitStore } from "@/store/habitStore";
 import { useFinanceStore } from "@/store/financeStore";
@@ -39,7 +40,10 @@ export default function CalendarPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const tasks = useTaskStore(s => s.tasks);
   const habits = useHabitStore(s => s.habits);
@@ -54,7 +58,7 @@ export default function CalendarPage() {
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - startDate.getDay());
     const dates: Date[] = [];
-    let current = new Date(startDate);
+    const current = new Date(startDate);
     while (dates.length < 35 || current <= lastDay) {
       if (dates.length >= 42) break;
       dates.push(new Date(current));
@@ -63,7 +67,7 @@ export default function CalendarPage() {
     return dates;
   }, [currentDate]);
 
-  const MODES: { id: CalendarMode; label: string; icon: any; color: string }[] = [
+  const MODES: { id: CalendarMode; label: string; icon: LucideIcon; color: string }[] = [
     { id: "personal", label: "Personal", icon: Target, color: "bg-pink-500 text-white" },
     { id: "akademik", label: "Akademik", icon: GraduationCap, color: "bg-indigo-500 text-white" },
     { id: "financial", label: "Financial", icon: Wallet, color: "bg-emerald-500 text-white" },
@@ -73,8 +77,8 @@ export default function CalendarPage() {
   const getDayInfo = (date: Date) => {
     const dStr = toDateStr(date);
     const isToday = dStr === toDateStr(new Date());
-    let badges: { id: string; label: string; bg: string }[] = [];
-    let summaryList: React.ReactNode[] = [];
+    const badges: { id: string; label: string; bg: string }[] = [];
+    const summaryList: React.ReactNode[] = [];
     const customEvents = events.filter(e => e.date === dStr && e.mode === mode);
 
     if (customEvents.length > 0) {

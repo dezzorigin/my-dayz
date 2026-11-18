@@ -15,7 +15,10 @@ export default function HabitsPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   if (!mounted) return null;
 
@@ -132,7 +135,7 @@ function HabitCard({ habit, onToggle, onDelete }: { habit: ReturnType<typeof use
   );
 }
 
-function AddHabitModal({ onClose, onAdd }: { onClose: () => void; onAdd: (data: any) => void }) {
+function AddHabitModal({ onClose, onAdd }: { onClose: () => void; onAdd: (data: { name: string; icon: string }) => void }) {
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("💧");
   const ICONS = ["💧", "🏃‍♂️", "📖", "🧘‍♀️", "🥗", "💻", "🛌", "📝", "🚀", "🎸"];

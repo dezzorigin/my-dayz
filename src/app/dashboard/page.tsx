@@ -54,7 +54,9 @@ function AICommandBar() {
         body: JSON.stringify({ message: q, history: [] }),
       });
       const data = await res.json();
-      setResponse(data?.reply ?? data?.message ?? "Maaf, tidak ada respons.");
+      // Worker menjawab 503 + pesan jelas bila GEMINI_API_KEY belum
+      // terpasang — tampilkan pesannya apa adanya, jangan samarkan.
+      setResponse(res.ok ? (data?.reply ?? "Maaf, tidak ada respons.") : (data?.error ?? "AI gagal merespons."));
     } catch {
       setResponse("Koneksi ke AI gagal.");
     } finally { setLoading(false); }
@@ -97,9 +99,11 @@ function AICommandBar() {
 // ─── Header ──────────────────────────────────────────────────────────────────
 function DashboardHeader() {
   const [mounted, setMounted] = useState(false);
-  const [tod, setTod] = useState<TimeOfDay>("morning");
-  const [timeStr, setTimeStr] = useState("--:--");
-  const [dateStr, setDateStr] = useState("");
+  // Nilai awal dihitung malas (lazy) dari jam lokal — efek hanya memasang
+  // interval + menandai mounted lewat rAF, tanpa setState sinkron.
+  const [tod, setTod] = useState<TimeOfDay>(() => getTimeOfDay(new Date().getHours()));
+  const [timeStr, setTimeStr] = useState(() => new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }));
+  const [dateStr, setDateStr] = useState(() => new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
   const { userName } = useAuthStore();
 
   useEffect(() => {
@@ -109,9 +113,9 @@ function DashboardHeader() {
       setTimeStr(now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }));
       setDateStr(now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
     };
-    update(); setMounted(true);
     const t = setInterval(update, 30_000);
-    return () => clearInterval(t);
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => { clearInterval(t); cancelAnimationFrame(raf); };
   }, []);
 
   const g = GREETING_MAP[tod];
@@ -182,16 +186,16 @@ function VerticalTimeline({ onAddTask }: { onAddTask: () => void }) {
   const toggleTask = useTaskStore(s => s.toggleTask);
   const addTask = useTaskStore(s => s.addTask);
   const [mounted, setMounted] = useState(false);
-  const [currentHour, setCurrentHour] = useState(0);
-  const [currentMinute, setCurrentMinute] = useState(0);
+  const [currentHour, setCurrentHour] = useState(() => new Date().getHours());
+  const [currentMinute, setCurrentMinute] = useState(() => new Date().getMinutes());
   const [newTaskHour, setNewTaskHour] = useState<number | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
   useEffect(() => {
     const update = () => { const now = new Date(); setCurrentHour(now.getHours()); setCurrentMinute(now.getMinutes()); };
-    update(); setMounted(true);
     const t = setInterval(update, 60_000);
-    return () => clearInterval(t);
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => { clearInterval(t); cancelAnimationFrame(raf); };
   }, []);
 
   const today = todayStr();
@@ -325,7 +329,8 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   if (!mounted) {

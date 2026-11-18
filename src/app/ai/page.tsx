@@ -20,7 +20,10 @@ export default function AIVaultPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isTyping]);
 
   if (!mounted) return null;
@@ -65,8 +68,9 @@ export default function AIVaultPage() {
           setTimeout(() => setMessages(prev => [...prev, { id: Math.random().toString(36).slice(2), role: "assistant", content: `✅ Task Auto-Added: "${taskName}"`, timestamp: new Date().toISOString() }]), 500);
         }
       }
-    } catch (error: any) {
-      setMessages(prev => [...prev, { id: Math.random().toString(36).slice(2), role: "assistant", content: "⚠️ " + error.message, timestamp: new Date().toISOString() }]);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Gagal merespons.";
+      setMessages(prev => [...prev, { id: Math.random().toString(36).slice(2), role: "assistant", content: "⚠️ " + msg, timestamp: new Date().toISOString() }]);
     } finally { setIsTyping(false); }
   };
 
@@ -76,12 +80,27 @@ export default function AIVaultPage() {
   };
 
   const handleVoice = () => {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    // Tipe minimal Web Speech API (tidak ada di lib.dom bawaan TS).
+    type SpeechRecognitionInstance = {
+      lang: string;
+      interimResults: boolean;
+      onstart: (() => void) | null;
+      onend: (() => void) | null;
+      onerror: (() => void) | null;
+      onresult: ((ev: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+      start: () => void;
+    };
+    type SpeechRecognitionCtor = new () => SpeechRecognitionInstance;
+    const w = window as unknown as {
+      SpeechRecognition?: SpeechRecognitionCtor;
+      webkitSpeechRecognition?: SpeechRecognitionCtor;
+    };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!SR) { alert("Browser tidak mendukung Web Speech API."); return; }
     const r = new SR(); r.lang = "id-ID"; r.interimResults = false;
     r.onstart = () => setIsListening(true);
     r.onend = () => setIsListening(false);
-    r.onresult = (ev: any) => setInput(p => p + (p.length > 0 ? " " : "") + ev.results[0][0].transcript);
+    r.onresult = (ev) => setInput(p => p + (p.length > 0 ? " " : "") + ev.results[0][0].transcript);
     r.onerror = () => setIsListening(false);
     r.start();
   };

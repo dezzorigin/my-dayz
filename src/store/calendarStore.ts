@@ -16,6 +16,7 @@ export interface CalendarState {
   events: CustomEvent[];
   addEvent: (event: Omit<CustomEvent, 'id'>) => void;
   removeEvent: (id: string) => void;
+  reset: () => void;
 }
 
 export const useCalendarStore = create<CalendarState>()(
@@ -30,6 +31,7 @@ export const useCalendarStore = create<CalendarState>()(
         set((state) => ({
           events: state.events.filter((e) => e.id !== id),
         })),
+      reset: () => set({ events: [] }),
     }),
     {
       name: 'myday_calendar_v1',

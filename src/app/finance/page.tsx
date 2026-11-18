@@ -20,7 +20,10 @@ export default function FinancePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const { balance, income, expense, chartData } = useMemo(() => {
     const now = new Date();
@@ -113,7 +116,7 @@ export default function FinancePage() {
                     contentStyle={{ borderRadius: '16px', border: '1px solid var(--border-subtle)', boxShadow: '0 10px 40px rgba(0,0,0,0.2)', backgroundColor: 'var(--bg-surface)', backdropFilter: 'blur(12px)' }}
                     itemStyle={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}
                     labelStyle={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}
-                    formatter={(value: any) => formatIDR(Number(value || 0))}
+                    formatter={(value) => formatIDR(Number(value || 0))}
                   />
                   <Area type="monotone" dataKey="income" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorInc)" />
                   <Area type="monotone" dataKey="expense" stroke="#f43f5e" strokeWidth={3} fillOpacity={1} fill="url(#colorExp)" />

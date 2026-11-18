@@ -10,6 +10,8 @@ import { useFinanceStore } from "@/store/financeStore";
 import { useThemeStore } from "@/store/themeStore";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import { seedDemoIfEmpty, clearDemoData, isDemoSeeded } from "@/lib/demo";
+import { Database, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
@@ -20,8 +22,18 @@ export default function SettingsPage() {
   const router = useRouter();
   const [isExporting, setIsExporting] = useState(false);
   const [reportTimestamp, setReportTimestamp] = useState<string>("");
+  const [demoMsg, setDemoMsg] = useState<string | null>(null);
+  const [demoSeeded, setDemoSeeded] = useState(false);
 
-  useEffect(() => { setReportTimestamp(new Date().toLocaleString("id-ID")); }, []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setDemoSeeded(isDemoSeeded()));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setReportTimestamp(new Date().toLocaleString("id-ID")));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const tasks = useTaskStore((s) => s.tasks);
   const habits = useHabitStore((s) => s.habits);
@@ -40,6 +52,21 @@ export default function SettingsPage() {
   };
 
   const handleLogout = () => { logout(); router.push("/"); };
+
+  const handleSeedDemo = () => {
+    if (seedDemoIfEmpty()) {
+      setDemoSeeded(true);
+      setDemoMsg("Data contoh dimuat — cek Dashboard, Habits, dan Keuangan.");
+    } else {
+      setDemoMsg("Sudah ada data — data contoh hanya dimuat saat semua masih kosong.");
+    }
+  };
+
+  const handleClearData = () => {
+    clearDemoData();
+    setDemoSeeded(false);
+    setDemoMsg("Semua data (termasuk data contoh) sudah dihapus.");
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -94,6 +121,29 @@ export default function SettingsPage() {
           <button onClick={handleExportPDF} disabled={isExporting} className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-xl hover:shadow-lg shadow-pink-500/20 transition-all disabled:opacity-50 text-[13px] font-mono">
             <FileText size={14} /> {isExporting ? "Membuat..." : "Export PDF"}
           </button>
+        </div>
+      </section>
+
+      {/* Data Contoh */}
+      <section className="space-y-3">
+        <p className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.14em]">Data Contoh</p>
+        <div className="themed-card p-4 space-y-3">
+          <div className="flex items-center gap-3">
+            <Database size={16} className="text-pink-500 flex-shrink-0" />
+            <div>
+              <p className="text-[14px] font-medium text-[var(--text-primary)]">Data contoh {demoSeeded ? "aktif" : "belum dimuat"}</p>
+              <p className="text-[12px] text-[var(--text-muted)] mt-0.5">Tugas, habit, keuangan, diary, mood, kalender, dan roadmap contoh — hanya dimuat saat semua masih kosong, tidak pernah menimpa datamu.</p>
+            </div>
+          </div>
+          {demoMsg && <p className="text-[12px] text-pink-400">{demoMsg}</p>}
+          <div className="flex flex-wrap gap-2">
+            <button onClick={handleSeedDemo} className="px-4 py-2.5 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-400 text-[13px] font-mono hover:bg-pink-500/15 transition-colors">
+              Muat data contoh
+            </button>
+            <button onClick={handleClearData} className="px-4 py-2.5 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-rose-400 text-[13px] font-mono hover:border-rose-500/30 transition-colors flex items-center gap-2">
+              <Trash2 size={14} /> Hapus semua data
+            </button>
+          </div>
         </div>
       </section>
 

@@ -18,7 +18,10 @@ export default function PlannerPage() {
   const [activeTab, setActiveTab] = useState<"tasks" | "goals">("tasks");
   const [modalOpen, setModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   if (!mounted) return null;
 
@@ -117,8 +120,8 @@ export default function PlannerPage() {
           <AddPlannerModal
             onClose={() => setModalOpen(false)}
             onAdd={({ isGoal, data }) => {
-              if (isGoal) addGoal(data as any);
-              else addTask(data as any);
+              if (isGoal) addGoal(data);
+              else addTask(data);
               setModalOpen(false);
             }}
           />
@@ -201,7 +204,11 @@ function GoalItem({ goal, onIncrement }: { goal: Goal; onIncrement: () => void }
 }
 
 // ─── Add Modal ──────────────────────────────────────────────────────────────
-function AddPlannerModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: { isGoal: boolean; data: any }) => void }) {
+type PlannerModalPayload =
+  | { isGoal: false; data: { title: string; tag: string; priority: Priority } }
+  | { isGoal: true; data: { title: string; type: GoalType } };
+
+function AddPlannerModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: PlannerModalPayload) => void }) {
   const [type, setType] = useState<"task" | "goal">("task");
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("IT");

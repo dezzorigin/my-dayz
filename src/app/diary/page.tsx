@@ -27,8 +27,11 @@ export default function DiaryPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    if (todayMood && !selectedMood) setSelectedMood(todayMood.v);
+    const raf = requestAnimationFrame(() => {
+      setMounted(true);
+      if (todayMood && !selectedMood) setSelectedMood(todayMood.v);
+    });
+    return () => cancelAnimationFrame(raf);
   }, [todayMood, selectedMood]);
 
   if (!mounted) return null;
