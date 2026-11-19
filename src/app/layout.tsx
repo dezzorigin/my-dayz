@@ -16,21 +16,39 @@ const inter = Inter({
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://my-dayz.pages.dev"),
   title: {
     default: "MyDayz — Personal AI OS",
     template: "%s · MyDayz",
   },
   description:
-    "Your personal AI-powered operating system. Manage tasks, finances, habits, and your day — all in one beautiful command center.",
+    "Satu command center untuk mengelola tugas, keuangan, kebiasaan, dan hari-harimu — didukung AI.",
   keywords: ["productivity", "personal os", "habit tracker", "finance tracker", "ai planner"],
   authors: [{ name: "MyDayz" }],
   creator: "MyDayz",
   openGraph: {
     type: "website",
     locale: "id_ID",
+    url: "https://my-dayz.pages.dev",
     title: "MyDayz — Personal AI OS",
-    description: "Your personal AI-powered operating system.",
+    description:
+      "Satu command center untuk mengelola tugas, keuangan, kebiasaan, dan hari-harimu — didukung AI.",
     siteName: "MyDayz",
+    images: [
+      {
+        url: "https://my-dayz.pages.dev/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "MyDayz — Personal AI OS",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MyDayz — Personal AI OS",
+    description:
+      "Satu command center untuk mengelola tugas, keuangan, kebiasaan, dan hari-harimu — didukung AI.",
+    images: ["https://my-dayz.pages.dev/og-image.png"],
   },
   icons: {
     icon: [
